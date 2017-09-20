@@ -23,6 +23,7 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Settings)
 	float maxTime = 30;
 
+	bool paused = false;
 	float currentTime;
 
 protected:
@@ -32,7 +33,6 @@ protected:
 public:	
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
-
-	
-	
+	void Restart();
+	void SetPause(bool f);
 };

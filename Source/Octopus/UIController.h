@@ -11,20 +11,26 @@
 #include "UIController.generated.h"
 
 class AGameController;
+class UMainUI;
 
 UCLASS()
 class OCTOPUS_API AUIController : public AActor
 {
 	GENERATED_BODY()
+
+	float notificationTimeLeft = 0;
 	
 public:	
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = References)
 	AGameController* gameController;
 
-	UFUNCTION(BlueprintImplementableEvent, meta = (DisplayName = "ShowNotification"))
-	void ShowNotification(const FString &text, float duration);
+	UPROPERTY(EditAnywhere, Category = References)
+	FComponentReference uiWidgetRef;
 
-	UFUNCTION(BlueprintImplementableEvent, meta = (DisplayName = "SetTime"))
+	UMainUI* m_uiWidget;
+	APlayerController* playerCached;
+
+	void ShowNotification(const FString &text, float duration);
 	void SetTime(const FString &text);
 
 	UFUNCTION(BlueprintImplementableEvent, meta = (DisplayName = "AddKey"))
@@ -33,11 +39,13 @@ public:
 	UFUNCTION(BlueprintImplementableEvent, meta = (DisplayName = "RemoveKey"))
 	void RemoveKey(const KeyColor key);
 
-	UFUNCTION(BlueprintImplementableEvent, meta = (DisplayName = "ShowEndGame"))
 	void ShowEndGame(const FString &text);
-
-	UFUNCTION(BlueprintImplementableEvent, meta = (DisplayName = "ShowStartScreen"))
 	void ShowStartScreen(const FString &text);
+
+	UFUNCTION()
+	void OnPlayAgain();
+	UFUNCTION()
+	void OnStartPlay();
 
 	// Sets default values for this actor's properties
 	AUIController();
@@ -45,11 +53,12 @@ public:
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
+	virtual void PostInitializeComponents() override;
 
 public:	
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
-
+	UTexture2D* LoadTextureFromPath(const FString& Path);
 	
 	
 };
