@@ -10,7 +10,7 @@ enum class KeyColor : uint8
 	Red,
 	Green,
 	Blue,
-	Any
+	None
 };
 
 TCHAR* KeyColorToString(KeyColor c);

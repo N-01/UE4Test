@@ -38,12 +38,11 @@ void AGameController::Tick(float DeltaTime)
 
 void AGameController::Restart()
 {
-	GetWorld()->GetFirstPlayerController()->ConsoleCommand("restart");
+	GetWorld()->GetFirstPlayerController()->ConsoleCommand("RestartLevel");
 }
 
 void AGameController::SetPause(bool state)
 {
 	paused = state;
-	//UGameplayStatics::SetGamePaused(GetWorld(), state);
 }
 

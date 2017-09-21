@@ -32,10 +32,13 @@ void ADoor::Tick(float DeltaTime)
 
 void ADoor::Activate(AOctopusCharacter* usedBy)
 {
-	if (requiredKey == KeyColor::Any || usedBy->ownedKeys[requiredKey])
+	if (requiredKey == KeyColor::None || usedBy->ownedKeys[requiredKey])
 	{
 		isOpen = !isOpen;
 		targetAngle = isOpen ? openState : closedState;
+
+		if(requiredKey != KeyColor::None)
+			usedBy->RemoveKey(requiredKey);
 	}
 	else {
 		usedBy->uiController->ShowNotification(FString::Printf(L"You need a %s key", KeyColorToString(requiredKey)), 2);

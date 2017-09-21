@@ -8,6 +8,7 @@
 #include "GameFramework/CharacterMovementComponent.h"
 #include "GameFramework/Controller.h"
 #include "GameFramework/SpringArmComponent.h"
+#include "Kismet/KismetSystemLibrary.h"
 
 #include <math.h>
 #include "EngineUtils.h"
@@ -47,6 +48,8 @@ AOctopusCharacter::AOctopusCharacter()
 	FollowCamera = CreateDefaultSubobject<UCameraComponent>(TEXT("FollowCamera"));
 	FollowCamera->SetupAttachment(CameraBoom, USpringArmComponent::SocketName); // Attach the camera to the end of the boom and let the boom adjust to match the controller orientation
 	FollowCamera->bUsePawnControlRotation = false; // Camera does not rotate relative to arm
+
+	TraceParams = FCollisionQueryParams(FName(TEXT("Trace")), true, this);
 }
 
 //////////////////////////////////////////////////////////////////////////
@@ -98,17 +101,21 @@ void AOctopusCharacter::Tick(float DeltaTime) {
 			diff.Normalize();
 
 			auto angle = acos(FVector::DotProduct(diff, FollowCamera->GetForwardVector()));
-			bool inSight = angle > PI / 2;
+			if (angle > PI / 2) {
+				FHitResult HitInfo(ForceInit);
+				FVector cameraToInteractible = FollowCamera->GetComponentLocation() - otherPos;
 
-			if(inSight)
-				found = interactible;
+				GetWorld()->LineTraceSingleByChannel(HitInfo, FollowCamera->GetComponentLocation(), -cameraToInteractible * 300, ECollisionChannel::ECC_WorldStatic, TraceParams);
 
-			interactible->ShowWidget(inSight);
+				if (Cast<AInteractible>(HitInfo.GetActor()))
+					found = interactible;
+			}
+		}
+
+		interactible->ShowWidget(found != nullptr);
+
+		if(found != nullptr)
 			break;
-		}
-		else {
-			interactible->ShowWidget(false);
-		}
 	}
 
 	closestInteractible = found;
@@ -122,6 +129,12 @@ void AOctopusCharacter::Interact() {
 void AOctopusCharacter::AddKey(KeyColor key) {
 	ownedKeys.insert_or_assign(key, true);
 	uiController->AddKey(key);
+}
+
+void AOctopusCharacter::RemoveKey(KeyColor key)
+{
+	ownedKeys[key] = false;
+	uiController->RemoveKey(key);
 }
 
 void AOctopusCharacter::OnResetVR()

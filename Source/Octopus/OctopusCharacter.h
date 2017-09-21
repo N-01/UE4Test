@@ -31,6 +31,7 @@ class AOctopusCharacter : public ACharacter
 
 public:
 	AOctopusCharacter();
+
 	std::map<KeyColor, bool> ownedKeys;
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = References)
@@ -47,11 +48,14 @@ public:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category=Camera)
 	float BaseLookUpRate;
 
+	FCollisionQueryParams TraceParams;
+
 	// Called every frame
 	void Tick(float DeltaTime) override;
 
 	void Interact();
 	void AddKey(KeyColor key);
+	void RemoveKey(KeyColor key);
 
 protected:
 

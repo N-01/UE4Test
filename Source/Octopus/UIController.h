@@ -3,6 +3,8 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "Key.h"
+#include <map>
 
 #include "UMG.h"
 #include "Components/WidgetComponent.h"
@@ -30,13 +32,13 @@ public:
 	UMainUI* m_uiWidget;
 	APlayerController* playerCached;
 
+	std::map<KeyColor, UUserWidget*> keyWidgets;
+	std::map<KeyColor, UTexture2D*> keyTextures;
+
 	void ShowNotification(const FString &text, float duration);
 	void SetTime(const FString &text);
 
-	UFUNCTION(BlueprintImplementableEvent, meta = (DisplayName = "AddKey"))
 	void AddKey(const KeyColor key);
-
-	UFUNCTION(BlueprintImplementableEvent, meta = (DisplayName = "RemoveKey"))
 	void RemoveKey(const KeyColor key);
 
 	void ShowEndGame(const FString &text);
@@ -54,6 +56,7 @@ protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
 	virtual void PostInitializeComponents() override;
+	virtual void ShowScreen(UCanvasPanel* screen);
 
 public:	
 	// Called every frame
