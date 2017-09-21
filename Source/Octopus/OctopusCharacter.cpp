@@ -85,6 +85,10 @@ void AOctopusCharacter::SetupPlayerInputComponent(class UInputComponent* PlayerI
 
 void AOctopusCharacter::Tick(float DeltaTime) {
 	
+
+	//look for interactibles: if it's close enough,
+	//in less than 90deg angle to camera vector
+	//and accessible to raycast, then you can use it
 	TArray<AActor*> FoundActors;
 	UGameplayStatics::GetAllActorsOfClass(GetWorld(), AInteractible::StaticClass(), FoundActors);
 
