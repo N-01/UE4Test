@@ -16,8 +16,8 @@ void AGameController::BeginPlay()
 {
 	Super::BeginPlay();
 	currentTime = maxTime;
+	playerCached = GetWorld()->GetFirstPlayerController();
 
-	uiController->playerCached = GetWorld()->GetFirstPlayerController();
 	uiController->ShowStartScreen("Try getting a green orb in 30 seconds!");
 }
 
@@ -32,17 +32,24 @@ void AGameController::Tick(float DeltaTime)
 
 	uiController->SetTime(FString(std::to_string((int)currentTime).c_str()));
 
-	if(currentTime <= 0)
+	if (currentTime <= 0)
 		uiController->ShowEndGame("You ran out of time! Try again!");
 }
 
 void AGameController::Restart()
 {
-	GetWorld()->GetFirstPlayerController()->ConsoleCommand("RestartLevel");
+	playerCached->ConsoleCommand("RestartLevel");
 }
 
 void AGameController::SetPause(bool state)
 {
+	if(state)
+		playerCached->SetInputMode(FInputModeUIOnly());
+	else
+		playerCached->SetInputMode(FInputModeGameOnly());
+
+	playerCached->bShowMouseCursor = state;
+
 	paused = state;
 }
 

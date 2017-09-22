@@ -30,8 +30,7 @@ public:
 	FComponentReference uiWidgetRef;
 
 	UHUDWidget* hudWidget;
-	APlayerController* playerCached;
-
+	
 	std::map<KeyColor, UUserWidget*> keyWidgets;
 	std::map<KeyColor, UTexture2D*> keyTextures;
 

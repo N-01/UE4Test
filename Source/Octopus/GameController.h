@@ -20,6 +20,8 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = References)
 	AUIController* uiController;
 
+	APlayerController* playerCached;
+
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Settings)
 	float maxTime = 30;
 

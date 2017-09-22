@@ -69,10 +69,6 @@ void AUIController::RemoveKey(const KeyColor key)
 void AUIController::ShowScreen(UCanvasPanel* screen)
 {
 	screen->SetVisibility(ESlateVisibility::Visible);
-
-	playerCached->SetInputMode(FInputModeUIOnly());
-	playerCached->bShowMouseCursor = true;
-
 	gameController->SetPause(true);
 }
 
@@ -100,8 +96,6 @@ void AUIController::OnPlayAgain()
 void AUIController::OnStartPlay()
 {
 	hudWidget->startScreen->SetVisibility(ESlateVisibility::Collapsed);
-	playerCached->SetInputMode(FInputModeGameOnly());
-	playerCached->bShowMouseCursor = false;
 	gameController->SetPause(false);
 }
 
