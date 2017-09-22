@@ -33,8 +33,8 @@ void AOctopusCharacter::Tick(float DeltaTime) {
 	for (size_t i = 0; i < FoundActors.Num(); i++)
 	{
 		auto interactible = (AInteractible*)FoundActors[i];
-		auto otherPos = interactible->GetTransform().GetLocation();
-		auto diff = (pos - otherPos);
+		auto interactiblePos = interactible->GetTransform().GetLocation();
+		auto diff = (pos - interactiblePos);
 
 		if (diff.Size() < 150) {
 			diff.Normalize();
@@ -42,9 +42,10 @@ void AOctopusCharacter::Tick(float DeltaTime) {
 			auto angle = acos(FVector::DotProduct(diff, FollowCamera->GetForwardVector()));
 			if (angle > PI / 2) {
 				FHitResult HitInfo(ForceInit);
-				FVector cameraToInteractible = FollowCamera->GetComponentLocation() - otherPos;
+				FVector cameraPos = FollowCamera->GetComponentLocation();
+				FVector cameraToInteractible = interactiblePos - cameraPos;
 
-				GetWorld()->LineTraceSingleByChannel(HitInfo, FollowCamera->GetComponentLocation(), -cameraToInteractible * 300, ECollisionChannel::ECC_WorldStatic, TraceParams);
+				GetWorld()->LineTraceSingleByChannel(HitInfo, cameraPos, cameraToInteractible * 300, ECollisionChannel::ECC_WorldStatic, TraceParams);
 
 				if (Cast<AInteractible>(HitInfo.GetActor()))
 					found = interactible;
