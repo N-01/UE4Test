@@ -12,8 +12,8 @@ void AInteractible::BeginPlay()
 {
 	Super::BeginPlay();
 
-	//I couldn't find any working method to disable Widget rendering with no Blueprint involved
-	SetCaptionVisibility(false);
+	widgetComponent = Cast<UWidgetComponent>(uiWidgetRef.GetComponent(this));
+	widgetComponent->SetVisibility(false);
 }
 
 void AInteractible::Activate(AOctopusCharacter* usedBy) {
@@ -22,7 +22,7 @@ void AInteractible::Activate(AOctopusCharacter* usedBy) {
 
 void AInteractible::ShowWidget(bool state) {
 	if (widgetVisible != state) {
-		SetCaptionVisibility(state);
+		widgetComponent->SetVisibility(state);
 		widgetVisible = state;
 	}
 }

@@ -4,6 +4,10 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/Actor.h"
+
+#include "UMG.h"
+#include "Components/WidgetComponent.h"
+
 #include "Interactible.generated.h"
 
 class AOctopusCharacter;
@@ -14,18 +18,15 @@ class OCTOPUS_API AInteractible : public AActor
 	GENERATED_BODY()
 	
 public:	
-	bool isCloseToPlayer = false;
+	UPROPERTY(EditAnywhere, Category = References)
+	FComponentReference uiWidgetRef;
 
-	FEditorScriptExecutionGuard ScriptGuard;
+	UWidgetComponent* widgetComponent;
 
 	// Sets default values for this actor's properties
 	AInteractible();
 
-	UFUNCTION(BlueprintImplementableEvent, meta = (DisplayName = "SetCaptionVisibility"))
-	void SetCaptionVisibility(bool state);
-
 	virtual void Activate(AOctopusCharacter* usedBy);
-
 	virtual void ShowWidget(bool state);
 
 protected:
