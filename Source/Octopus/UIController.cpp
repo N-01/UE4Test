@@ -6,6 +6,9 @@
 
 #include <algorithm>
 
+//////////////////////////////////////////
+//INIT
+
 AUIController::AUIController()
 {
 	PrimaryActorTick.bCanEverTick = true;
@@ -23,6 +26,9 @@ void AUIController::BeginPlay()
 	Super::BeginPlay();
 }
 
+//////////////////////////////////////////
+//BASIC TEXT ELEMENTS
+
 void AUIController::ShowNotification(const FString &text, float duration) {
 	hudWidget->notifyTextBlock->SetText(FText::FromString(text));
 	hudWidget->notifyTextBlock->SetVisibility(ESlateVisibility::Visible);
@@ -33,6 +39,9 @@ void AUIController::SetTime(const FString &text)
 {
 	hudWidget->timerText->SetText(FText::FromString(text));
 }
+
+//////////////////////////////////////////
+//KEYS
 
 void AUIController::AddKey(const KeyColor key)
 {
@@ -65,6 +74,9 @@ void AUIController::RemoveKey(const KeyColor key)
 		keyWidgets[key]->SetVisibility(ESlateVisibility::Collapsed);
 	}
 }
+
+//////////////////////////////////////////
+//MENU SCREENS
 
 void AUIController::ShowScreen(UCanvasPanel* screen)
 {
@@ -99,7 +111,8 @@ void AUIController::OnStartPlay()
 	gameController->SetPause(false);
 }
 
-// Called every frame
+//////////////////////////////////////////
+//EXTRA
 void AUIController::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);

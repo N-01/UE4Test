@@ -15,67 +15,8 @@
 #include "UIController.h"
 #include "Classes/Kismet/GameplayStatics.h"
 
-AOctopusCharacter::AOctopusCharacter()
-{
-	// Set size for collision capsule
-	GetCapsuleComponent()->InitCapsuleSize(42.f, 96.0f);
-
-	// set our turn rates for input
-	BaseTurnRate = 45.f;
-	BaseLookUpRate = 45.f;
-
-	// Don't rotate when the controller rotates. Let that just affect the camera.
-	bUseControllerRotationPitch = false;
-	bUseControllerRotationYaw = false;
-	bUseControllerRotationRoll = false;
-
-	// Configure character movement
-	GetCharacterMovement()->bOrientRotationToMovement = true; // Character moves in the direction of input...	
-	GetCharacterMovement()->RotationRate = FRotator(0.0f, 540.0f, 0.0f); // ...at this rotation rate
-	GetCharacterMovement()->JumpZVelocity = 600.f;
-	GetCharacterMovement()->AirControl = 0.2f;
-
-	// Create a camera boom (pulls in towards the player if there is a collision)
-	CameraBoom = CreateDefaultSubobject<USpringArmComponent>(TEXT("CameraBoom"));
-	CameraBoom->SetupAttachment(RootComponent);
-	CameraBoom->TargetArmLength = 300.0f; // The camera follows at this distance behind the character	
-	CameraBoom->bUsePawnControlRotation = true; // Rotate the arm based on the controller
-
-	// Create a follow camera
-	FollowCamera = CreateDefaultSubobject<UCameraComponent>(TEXT("FollowCamera"));
-	FollowCamera->SetupAttachment(CameraBoom, USpringArmComponent::SocketName); // Attach the camera to the end of the boom and let the boom adjust to match the controller orientation
-	FollowCamera->bUsePawnControlRotation = false; // Camera does not rotate relative to arm
-
-	TraceParams = FCollisionQueryParams(FName(TEXT("Trace")), true, this);
-}
-
-//////////////////////////////////////////////////////////////////////////
-// Input
-
-void AOctopusCharacter::SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent)
-{
-	// Set up gameplay key bindings
-	check(PlayerInputComponent);
-	PlayerInputComponent->BindAction("Jump", IE_Pressed, this, &ACharacter::Jump);
-	PlayerInputComponent->BindAction("Jump", IE_Released, this, &ACharacter::StopJumping);
-
-	PlayerInputComponent->BindAxis("MoveForward", this, &AOctopusCharacter::MoveForward);
-	PlayerInputComponent->BindAxis("MoveRight", this, &AOctopusCharacter::MoveRight);
-
-	PlayerInputComponent->BindAxis("Turn", this, &APawn::AddControllerYawInput);
-	PlayerInputComponent->BindAxis("TurnRate", this, &AOctopusCharacter::TurnAtRate);
-	PlayerInputComponent->BindAxis("LookUp", this, &APawn::AddControllerPitchInput);
-	PlayerInputComponent->BindAxis("LookUpRate", this, &AOctopusCharacter::LookUpAtRate);
-
-	// handle touch devices
-	PlayerInputComponent->BindTouch(IE_Pressed, this, &AOctopusCharacter::TouchStarted);
-	PlayerInputComponent->BindTouch(IE_Released, this, &AOctopusCharacter::TouchStopped);
-
-	// VR headset functionality
-	PlayerInputComponent->BindAction("ResetVR", IE_Pressed, this, &AOctopusCharacter::OnResetVR);
-	PlayerInputComponent->BindAction("Interact", IE_Pressed, this, &AOctopusCharacter::Interact);
-}
-
+//////////////////////////////////////////
+//IMPORTANT STUFF
 
 void AOctopusCharacter::Tick(float DeltaTime) {
 	
@@ -133,6 +74,72 @@ void AOctopusCharacter::RemoveKey(KeyColor key)
 {
 	ownedKeys[key] = false;
 	uiController->RemoveKey(key);
+}
+
+
+//////////////////////////////////////////
+//BASE UNREAL STUFF
+
+
+AOctopusCharacter::AOctopusCharacter()
+{
+	// Set size for collision capsule
+	GetCapsuleComponent()->InitCapsuleSize(42.f, 96.0f);
+
+	// set our turn rates for input
+	BaseTurnRate = 45.f;
+	BaseLookUpRate = 45.f;
+
+	// Don't rotate when the controller rotates. Let that just affect the camera.
+	bUseControllerRotationPitch = false;
+	bUseControllerRotationYaw = false;
+	bUseControllerRotationRoll = false;
+
+	// Configure character movement
+	GetCharacterMovement()->bOrientRotationToMovement = true; // Character moves in the direction of input...	
+	GetCharacterMovement()->RotationRate = FRotator(0.0f, 540.0f, 0.0f); // ...at this rotation rate
+	GetCharacterMovement()->JumpZVelocity = 600.f;
+	GetCharacterMovement()->AirControl = 0.2f;
+
+	// Create a camera boom (pulls in towards the player if there is a collision)
+	CameraBoom = CreateDefaultSubobject<USpringArmComponent>(TEXT("CameraBoom"));
+	CameraBoom->SetupAttachment(RootComponent);
+	CameraBoom->TargetArmLength = 300.0f; // The camera follows at this distance behind the character	
+	CameraBoom->bUsePawnControlRotation = true; // Rotate the arm based on the controller
+
+												// Create a follow camera
+	FollowCamera = CreateDefaultSubobject<UCameraComponent>(TEXT("FollowCamera"));
+	FollowCamera->SetupAttachment(CameraBoom, USpringArmComponent::SocketName); // Attach the camera to the end of the boom and let the boom adjust to match the controller orientation
+	FollowCamera->bUsePawnControlRotation = false; // Camera does not rotate relative to arm
+
+	TraceParams = FCollisionQueryParams(FName(TEXT("Trace")), true, this);
+}
+
+//////////////////////////////////////////////////////////////////////////
+// Input
+
+void AOctopusCharacter::SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent)
+{
+	// Set up gameplay key bindings
+	check(PlayerInputComponent);
+	PlayerInputComponent->BindAction("Jump", IE_Pressed, this, &ACharacter::Jump);
+	PlayerInputComponent->BindAction("Jump", IE_Released, this, &ACharacter::StopJumping);
+
+	PlayerInputComponent->BindAxis("MoveForward", this, &AOctopusCharacter::MoveForward);
+	PlayerInputComponent->BindAxis("MoveRight", this, &AOctopusCharacter::MoveRight);
+
+	PlayerInputComponent->BindAxis("Turn", this, &APawn::AddControllerYawInput);
+	PlayerInputComponent->BindAxis("TurnRate", this, &AOctopusCharacter::TurnAtRate);
+	PlayerInputComponent->BindAxis("LookUp", this, &APawn::AddControllerPitchInput);
+	PlayerInputComponent->BindAxis("LookUpRate", this, &AOctopusCharacter::LookUpAtRate);
+
+	// handle touch devices
+	PlayerInputComponent->BindTouch(IE_Pressed, this, &AOctopusCharacter::TouchStarted);
+	PlayerInputComponent->BindTouch(IE_Released, this, &AOctopusCharacter::TouchStopped);
+
+	// VR headset functionality
+	PlayerInputComponent->BindAction("ResetVR", IE_Pressed, this, &AOctopusCharacter::OnResetVR);
+	PlayerInputComponent->BindAction("Interact", IE_Pressed, this, &AOctopusCharacter::Interact);
 }
 
 void AOctopusCharacter::OnResetVR()
