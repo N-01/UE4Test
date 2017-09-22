@@ -20,6 +20,11 @@ void ADoor::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 
+	if (abs(currentAngle - targetAngle) < 1e-05) {
+		SetActorTickEnabled(false);
+		return;
+	}
+
 	float rotation = openSpeed * DeltaTime;
 
 	if (currentAngle < targetAngle)
@@ -39,6 +44,8 @@ void ADoor::Activate(AOctopusCharacter* usedBy)
 
 		if(requiredKey != KeyColor::None)
 			usedBy->RemoveKey(requiredKey);
+
+		SetActorTickEnabled(true);
 	}
 	else {
 		usedBy->uiController->ShowNotification(FString::Printf(L"You need a %s key", KeyColorToString(requiredKey)), 2);
