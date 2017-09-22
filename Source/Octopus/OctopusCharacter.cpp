@@ -39,8 +39,8 @@ void AOctopusCharacter::Tick(float DeltaTime) {
 		if (diff.Size() < 150) {
 			diff.Normalize();
 
-			auto angle = acos(FVector::DotProduct(diff, FollowCamera->GetForwardVector()));
-			if (angle > PI / 2) {
+			auto angle = FVector::DotProduct(diff, FollowCamera->GetForwardVector());
+			if (angle < sqrt(2)/2) {
 				FHitResult HitInfo(ForceInit);
 				FVector cameraPos = FollowCamera->GetComponentLocation();
 				FVector cameraToInteractible = interactiblePos - cameraPos;
