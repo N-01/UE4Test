@@ -2,7 +2,7 @@
 
 #include "UIController.h"
 #include "GameController.h"
-#include "MainUI.h"
+#include "HUDWidget.h"
 
 #include <algorithm>
 
@@ -15,7 +15,7 @@ void AUIController::PostInitializeComponents() {
 	Super::PostInitializeComponents();
 
 	if(uiWidgetRef.ComponentProperty.IsNone() == false)
-		m_uiWidget = Cast<UMainUI>(Cast<UWidgetComponent>(uiWidgetRef.GetComponent(this))->GetUserWidgetObject());
+		hudWidget = Cast<UHUDWidget>(Cast<UWidgetComponent>(uiWidgetRef.GetComponent(this))->GetUserWidgetObject());
 }
 
 void AUIController::BeginPlay()
@@ -24,14 +24,14 @@ void AUIController::BeginPlay()
 }
 
 void AUIController::ShowNotification(const FString &text, float duration) {
-	m_uiWidget->notifyTextBlock->SetText(FText::FromString(text));
-	m_uiWidget->notifyTextBlock->SetVisibility(ESlateVisibility::Visible);
+	hudWidget->notifyTextBlock->SetText(FText::FromString(text));
+	hudWidget->notifyTextBlock->SetVisibility(ESlateVisibility::Visible);
 	notificationTimeLeft = duration;
 }
 
 void AUIController::SetTime(const FString &text)
 {
-	m_uiWidget->timerText->SetText(FText::FromString(text));
+	hudWidget->timerText->SetText(FText::FromString(text));
 }
 
 void AUIController::AddKey(const KeyColor key)
@@ -43,7 +43,7 @@ void AUIController::AddKey(const KeyColor key)
 		keyWidgets[key]->SetVisibility(ESlateVisibility::Visible);
 	}
 	else {
-		keyWidgets[key] = CreateWidget<UUserWidget>(GetWorld(), m_uiWidget->KeyTemplate);
+		keyWidgets[key] = CreateWidget<UUserWidget>(GetWorld(), hudWidget->KeyTemplate);
 	}
 
 	UUserWidget* keyWidget = keyWidgets[key];
@@ -56,7 +56,7 @@ void AUIController::AddKey(const KeyColor key)
 	image->SetBrushFromTexture(keyTextures[key]);
 
 	keyWidget->AddToViewport();
-	m_uiWidget->keyBox->AddChild(keyWidget);
+	hudWidget->keyBox->AddChild(keyWidget);
 }
 
 void AUIController::RemoveKey(const KeyColor key)
@@ -78,18 +78,18 @@ void AUIController::ShowScreen(UCanvasPanel* screen)
 
 void AUIController::ShowEndGame(const FString & text)
 {
-	m_uiWidget->playAgainButton->OnClicked.AddDynamic(this, &AUIController::OnPlayAgain);
-	m_uiWidget->endText->SetText(FText::FromString(text));
+	hudWidget->playAgainButton->OnClicked.AddDynamic(this, &AUIController::OnPlayAgain);
+	hudWidget->endText->SetText(FText::FromString(text));
 
-	ShowScreen(m_uiWidget->endGameScreen);
+	ShowScreen(hudWidget->endGameScreen);
 }
 
 void AUIController::ShowStartScreen(const FString & text)
 {
-	m_uiWidget->goButton->OnClicked.AddDynamic(this, &AUIController::OnStartPlay);
-	m_uiWidget->startText->SetText(FText::FromString(text));
+	hudWidget->goButton->OnClicked.AddDynamic(this, &AUIController::OnStartPlay);
+	hudWidget->startText->SetText(FText::FromString(text));
 
-	ShowScreen(m_uiWidget->startScreen);
+	ShowScreen(hudWidget->startScreen);
 }
 
 void AUIController::OnPlayAgain()
@@ -99,7 +99,7 @@ void AUIController::OnPlayAgain()
 
 void AUIController::OnStartPlay()
 {
-	m_uiWidget->startScreen->SetVisibility(ESlateVisibility::Collapsed);
+	hudWidget->startScreen->SetVisibility(ESlateVisibility::Collapsed);
 	playerCached->SetInputMode(FInputModeGameOnly());
 	playerCached->bShowMouseCursor = false;
 	gameController->SetPause(false);
@@ -114,7 +114,7 @@ void AUIController::Tick(float DeltaTime)
 		notificationTimeLeft = std::max(notificationTimeLeft - DeltaTime, 0.0f);
 
 		if (notificationTimeLeft < 1e-5) {
-			m_uiWidget->notifyTextBlock->SetVisibility(ESlateVisibility::Collapsed);
+			hudWidget->notifyTextBlock->SetVisibility(ESlateVisibility::Collapsed);
 		}
 	}
 }

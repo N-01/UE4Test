@@ -13,7 +13,7 @@
 #include "UIController.generated.h"
 
 class AGameController;
-class UMainUI;
+class UHUDWidget;
 
 UCLASS()
 class OCTOPUS_API AUIController : public AActor
@@ -29,7 +29,7 @@ public:
 	UPROPERTY(EditAnywhere, Category = References)
 	FComponentReference uiWidgetRef;
 
-	UMainUI* m_uiWidget;
+	UHUDWidget* hudWidget;
 	APlayerController* playerCached;
 
 	std::map<KeyColor, UUserWidget*> keyWidgets;
