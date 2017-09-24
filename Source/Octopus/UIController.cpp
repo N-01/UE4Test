@@ -3,6 +3,7 @@
 #include "UIController.h"
 #include "GameController.h"
 #include "HUDWidget.h"
+#include "InteractionPrompt.h"
 
 #include <algorithm>
 
@@ -98,6 +99,12 @@ void AUIController::ShowStartScreen(const FString & text)
 	hudWidget->startText->SetText(FText::FromString(text));
 
 	ShowScreen(hudWidget->startScreen);
+}
+
+void AUIController::ShowInteractFor(AActor* actor) {
+	if (actor != nullptr)
+		interactPrompt->SetActorLocation(actor->GetActorLocation());
+	interactPrompt->Show(actor != nullptr);
 }
 
 void AUIController::OnPlayAgain()

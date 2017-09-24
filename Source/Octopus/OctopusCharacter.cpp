@@ -13,10 +13,13 @@
 #include <math.h>
 #include "EngineUtils.h"
 #include "UIController.h"
+
 #include "Classes/Kismet/GameplayStatics.h"
 
 //////////////////////////////////////////
 //IMPORTANT STUFF
+
+const float cosine45 = sqrt(2.0f) / 2;
 
 void AOctopusCharacter::Tick(float DeltaTime) {
 	
@@ -34,13 +37,14 @@ void AOctopusCharacter::Tick(float DeltaTime) {
 	{
 		auto interactible = (AInteractible*)FoundActors[i];
 		auto interactiblePos = interactible->GetTransform().GetLocation();
-		auto diff = (pos - interactiblePos);
+		auto diff = (interactiblePos - pos);
 
 		if (diff.Size() < 150) {
 			diff.Normalize();
 
-			auto angle = FVector::DotProduct(diff, FollowCamera->GetForwardVector());
-			if (angle < sqrt(2)/2) {
+			auto angle = 1.0 - FVector::DotProduct(diff, FollowCamera->GetForwardVector());
+
+			if (angle < cosine45) {
 				FHitResult HitInfo(ForceInit);
 				FVector cameraPos = FollowCamera->GetComponentLocation();
 				FVector cameraToInteractible = interactiblePos - cameraPos;
@@ -49,16 +53,14 @@ void AOctopusCharacter::Tick(float DeltaTime) {
 
 				if (Cast<AInteractible>(HitInfo.GetActor()))
 					found = interactible;
+
+				break;
 			}
 		}
-
-		interactible->ShowWidget(found != nullptr);
-
-		if(found != nullptr)
-			break;
 	}
 
 	closestInteractible = found;
+	uiController->ShowInteractFor(found);
 }
 
 void AOctopusCharacter::Interact() {

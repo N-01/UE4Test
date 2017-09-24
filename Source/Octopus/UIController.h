@@ -14,6 +14,7 @@
 
 class AGameController;
 class UHUDWidget;
+class AInteractionPrompt;
 
 UCLASS()
 class OCTOPUS_API AUIController : public AActor
@@ -26,8 +27,12 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = References)
 	AGameController* gameController;
 
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = References)
+	AInteractionPrompt* interactPrompt;
+
 	UPROPERTY(EditAnywhere, Category = References)
 	FComponentReference uiWidgetRef;
+
 
 	UHUDWidget* hudWidget;
 	
@@ -42,6 +47,8 @@ public:
 
 	void ShowEndGame(const FString &text);
 	void ShowStartScreen(const FString &text);
+
+	void ShowInteractFor(AActor* actor = nullptr);
 
 	UFUNCTION()
 	void OnPlayAgain();

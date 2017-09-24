@@ -18,20 +18,8 @@ class OCTOPUS_API AInteractible : public AActor
 	GENERATED_BODY()
 	
 public:	
-	UPROPERTY(EditAnywhere, Category = References)
-	FComponentReference uiWidgetRef;
-
-	UWidgetComponent* widgetComponent;
-
 	// Sets default values for this actor's properties
 	AInteractible();
 
 	virtual void Activate(AOctopusCharacter* usedBy);
-	virtual void ShowWidget(bool state);
-
-protected:
-
-	bool widgetVisible = false;
-	// Called when the game starts or when spawned
-	virtual void BeginPlay() override;	
 };
